@@ -1,0 +1,10 @@
+.infoWrapper {
+  display: flex;
+  gap: 6px;
+}
+
+.infoWrapper p:not(:last-child)::after {
+  content: "|";
+  margin-left: 6px;
+  color: #999;
+}
