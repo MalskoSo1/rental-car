@@ -26,123 +26,114 @@ const RentForm = () => {
     comment: Yup.string(),
   });
   return (
-    <>
-      <div>
-        <h3>Book your car now</h3>
-        <p>Stay connected! We are always ready to help you.</p>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={FormSchema}
-        >
-          <Form>
-            {/* NAME */}
-            <div className={css.formGroup}>
-              <label htmlFor="name" className="sr-only">
-                Name
-              </label>
+    <div className={css.bookingForm}>
+      <h3 className={css.title}>Book your car now</h3>
+      <p className={css.subtitle}>
+        Stay connected! We are always ready to help you.
+      </p>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={FormSchema}
+      >
+        <Form className={css.form}>
+          {/* NAME */}
+          <div className={css.formGroup}>
+            <label htmlFor="name" className="sr-only">
+              Name
+            </label>
 
-              <Field
-                id="name"
-                type="text"
+            <Field
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Name*"
+              className={css.input}
+              autoComplete="name"
+            />
+
+            <div className={css.errorPlaceholder}>
+              <ErrorMessage
+                component="span"
                 name="name"
-                placeholder="Name*"
-                className={css.input}
+                className={css.error}
+                id="name-error"
               />
-
-              <div className={css.errorPlaceholder}>
-                <ErrorMessage
-                  component="span"
-                  name="name"
-                  className={css.error}
-                  id="name-error"
-                />
-              </div>
             </div>
+          </div>
 
-            {/* EMAIL */}
-            <div className={css.formGroup}>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
+          {/* EMAIL */}
+          <div className={css.formGroup}>
+            <label htmlFor="email" className="sr-only">
+              Email
+            </label>
 
-              <Field
-                id="email"
-                type="text"
+            <Field
+              id="email"
+              type="text"
+              name="email"
+              placeholder="Email*"
+              className={css.input}
+              autoComplete="email"
+            />
+
+            <div className={css.errorPlaceholder}>
+              <ErrorMessage
+                component="span"
                 name="email"
-                placeholder="Email*"
-                className={css.input}
+                className={css.error}
+                id="email-error"
               />
-
-              <div className={css.errorPlaceholder}>
-                <ErrorMessage
-                  component="span"
-                  name="email"
-                  className={css.error}
-                  id="email-error"
-                />
-              </div>
             </div>
+          </div>
 
-            {/* DATE */}
-            <div className={css.formGroup}>
-              <label htmlFor="date" className="sr-only">
-                Booking date
-              </label>
+          {/* DATE */}
+          <div className={css.formGroup}>
+            <label htmlFor="date" className="sr-only">
+              Booking date
+            </label>
 
-              <Field
-                id="date"
-                type="date"
-                name="date"
-                placeholder="Booking date"
-                className={css.input}
+            <Field
+              id="date"
+              type="date"
+              name="date"
+              placeholder="Booking date"
+              className={css.input}
+            />
+
+            <div className={css.errorPlaceholder}>
+              <ErrorMessage
+                component="span"
+                name="date" // here library with date
+                className={css.error}
+                id="date-error"
               />
-
-              <div className={css.errorPlaceholder}>
-                <ErrorMessage
-                  component="span"
-                  name="date" // here library with date
-                  className={css.error}
-                  id="date-error"
-                />
-              </div>
             </div>
+          </div>
 
-            {/* COMMENT */}
-            <div className={css.formGroup}>
-              <label htmlFor="comment" className="sr-only">
-                Comment
-              </label>
+          {/* COMMENT */}
+          <div className={css.formGroup}>
+            <label htmlFor="comment" className="sr-only">
+              Comment
+            </label>
 
-              <Field
-                as="textarea"
-                id="comment"
-                type="text"
-                name="comment"
-                placeholder="Comment"
-                className={css.textarea}
-              />
+            <Field
+              as="textarea"
+              id="comment"
+              type="text"
+              name="comment"
+              placeholder="Comment"
+              className={css.textarea}
+            />
+          </div>
 
-              <div className={css.errorPlaceholder}>
-                <ErrorMessage
-                  component="span"
-                  name="comment"
-                  className={css.error}
-                  id="comment-error"
-                />
-              </div>
-            </div>
-
-            {/* BUTTON */}
-            <div className={css.actions}>
-              <button type="submit" className={css.submitButton}>
-                Send
-              </button>
-            </div>
-          </Form>
-        </Formik>
-      </div>
-    </>
+          {/* BUTTON */}
+          <button type="submit" className={css.submitButton}>
+            Send
+          </button>
+        </Form>
+      </Formik>
+    </div>
   );
 };
 

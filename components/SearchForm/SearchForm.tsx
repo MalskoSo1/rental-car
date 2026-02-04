@@ -1,32 +1,62 @@
 "use client";
 
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Formik, FormikProps, Form, Field, ErrorMessage } from "formik";
 import css from "./SearchForm.module.css";
 import * as Yup from "yup";
-import { fetchBrands } from "@/lib/clientApi";
+import { fetchBrands, fetchCars } from "@/lib/clientApi";
 import { useQuery } from "@tanstack/react-query";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
+import { components } from "react-select";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+const Select = dynamic(() => import("react-select"), { ssr: false });
+
+interface Option {
+  value: string | number;
+  label: string;
+}
 
 const SearchForm = () => {
   const handleSubmit = () => console.log("hello");
 
   const {
     data: brands,
-    isSuccess,
-    isError,
-    error,
-    isLoading,
+    isSuccess: isBrandsSuccess,
+    isError: isBrandsError,
+    error: brandsError,
+    isLoading: isBrandsLoading,
   } = useQuery({
     queryKey: ["getBrands"],
     queryFn: () => fetchBrands(),
     // placeholderData: keepPreviousData,
   });
 
-  const vehicles = useVehiclesStore((s) => s.vehicles);
-  const carPrices = vehicles?.map((x) => Number(x.rentalPrice));
+  const {
+    data: carsData,
+    isSuccess: isCarsSuccess,
+    isError: isCarsError,
+    error: carsError,
+    isLoading: isCarsLoading,
+  } = useQuery({
+    queryKey: ["getCars"],
+    queryFn: () => fetchCars(),
+    // placeholderData: keepPreviousData,
+    placeholderData: { cars: [] },
+    enabled: false,
+  });
+
+  const setVehicles = useVehiclesStore((s) => s.setVehicles);
+
+  useEffect(() => {
+    if (isCarsSuccess) setVehicles(carsData.cars);
+  }, [isCarsSuccess, carsData, setVehicles]);
+
+  const carPrices = carsData?.cars?.map((x) => Number(x.rentalPrice));
   const minPrice = Math.min(...(carPrices ?? []));
   const maxPrice = Math.max(...(carPrices ?? []));
-  const availablePrices = [];
+  const availablePrices: number[] = [];
+  const brandOptions = brands?.map((b) => ({ value: b, label: b }));
 
   for (let price = minPrice; price <= maxPrice; price += 10) {
     availablePrices.push(price);
@@ -34,140 +64,373 @@ const SearchForm = () => {
 
   const initialValues = {
     brand: "",
-    price: "Choose a price",
+    price: "",
     from: "",
     to: "",
   };
 
   const FormSchema = Yup.object().shape({
-    brand: Yup.mixed().required("Brand is required"),
-    price: Yup.mixed()
-      .oneOf(["Expense", "Income"], "Invalid price")
-      .required("Price is required"),
-    from: Yup.number()
-      .typeError("Must be a number")
-      .integer("Must be an integer")
-      .min(1, "Must be at least 1")
-      .max(1000000, "Must be at most 1000000"),
-    to: Yup.number()
-      .typeError("Must be a number")
-      .integer("Must be an integer")
-      .min(1, "Must be at least 1")
-      .max(1000000, "Must be at most 1000000"),
+    brand: Yup.mixed(),
+    price: Yup.mixed(),
+    from: Yup.number().nullable(),
+    to: Yup.number().nullable(),
   });
+
+  const priceOptions = availablePrices?.map((price) => ({
+    value: price,
+    label: `$${price}`,
+  }));
   return (
-    <>
-      <div>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={FormSchema}
-        >
-          <Form>
+    <div className={css.formContainer}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={FormSchema}
+      >
+        {(formik: FormikProps<typeof initialValues>) => (
+          <Form className={css.form}>
             {/* CAR BRAND */}
-            <div className={css.formGroup}>
-              <label htmlFor="brand">Car brand</label>
-              <Field
-                as="select"
-                id="brand"
-                name="brand"
-                className={css.select}
-                placeholder="Choose a brand"
-              >
-                <option value="" disabled>
-                  Choose a brand
-                </option>
-                {brands?.map((brand) => {
-                  return (
-                    <option key={brand} value={brand}>
-                      {brand}
-                    </option>
-                  );
-                })}
-              </Field>
-              <ErrorMessage
-                component="span"
-                name="brand"
-                className={css.error}
-                id="brand-error"
-              />
+            <div className={`${css.formGroup} ${css.brandGroup}`}>
+              <p className={css.label}>Car brand</p>
+              <div className={css.inputWrapper}>
+                <Select
+                  inputId="brand-input"
+                  instanceId="brand-input"
+                  name="brand"
+                  options={brandOptions}
+                  isSearchable={false}
+                  placeholder="Choose a brand"
+                  classNamePrefix="custom"
+                  aria-label="Car brand"
+                  value={
+                    brandOptions?.find(
+                      (b) => b.value === formik.values.brand,
+                    ) || null
+                  }
+                  onChange={(option) =>
+                    formik.setFieldValue(
+                      "brand",
+                      (option as Option)?.value || "",
+                    )
+                  }
+                  components={{
+                    DropdownIndicator: (props) => (
+                      <components.DropdownIndicator {...props}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "16px",
+                            height: "16px",
+                            color: "#101828",
+                          }}
+                        >
+                          {props.selectProps.menuIsOpen ? (
+                            <svg
+                              width="16"
+                              height="16"
+                              className={css.arrowDown}
+                            >
+                              <use href="../../img/sprite.svg#icon-arrow-up" />
+                            </svg>
+                          ) : (
+                            <svg
+                              width="16"
+                              height="16"
+                              className={css.arrowDown}
+                            >
+                              <use href="../../img/sprite.svg#icon-arrow-down" />
+                            </svg>
+                          )}
+                        </div>
+                      </components.DropdownIndicator>
+                    ),
+                    IndicatorSeparator: () => null,
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      borderRadius: "12px",
+                      border: "1px solid var(--inputs)",
+                      paddingLeft: "16px",
+                      paddingRight: "16px",
+                      height: "44px",
+                      width: "100%",
+                      background: "var(--inputs)",
+                      boxShadow: "none",
+                      outline: "none",
+                      "&:hover": {
+                        border: "1px solid var(--inputs)",
+                      },
+                    }),
+                    valueContainer: (provided) => ({
+                      ...provided,
+                      padding: 0,
+                    }),
+                    input: (provided) => ({
+                      ...provided,
+                      margin: 0,
+                      padding: 0,
+                    }),
+
+                    singleValue: (provided) => ({
+                      ...provided,
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      color: "var(--main)",
+                      margin: 0,
+                    }),
+                    placeholder: (provided) => ({
+                      ...provided,
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      color: "var(--main)",
+                    }),
+                    dropdownIndicator: (provided) => ({
+                      ...provided,
+                      padding: 0,
+                    }),
+                    indicatorsContainer: (provided) => ({
+                      ...provided,
+                    }),
+                    //^ OPEN MENU
+                    menu: (provided) => ({
+                      ...provided,
+                      marginTop: "4px",
+                      border: "1px solid var(--inputs)",
+                      borderRadius: "12px",
+                      width: "100%",
+                      height: "272px",
+                      boxShadow: "0 4px 36px 0 rgba(0, 0, 0, 0.02)",
+                      background: "var(--white)",
+                    }),
+                    menuList: (provided) => ({
+                      ...provided,
+                      padding: "8px 0",
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      color: "var(--gray)",
+                      maxHeight: "272px",
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      background: "var(--white)",
+                      color: state.isFocused ? "var(--main)" : "var(--gray)",
+                      backgroundColor: "var(--white)",
+                      "&:active": {
+                        backgroundColor: "var(--white)",
+                      },
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
+              </div>
             </div>
 
             {/* PRICE */}
-            <div className={css.formGroup}>
-              <label htmlFor="price">Price/ 1 hour</label>
-              <Field
-                as="select"
-                id="price"
-                name="price"
-                className={css.select}
-                placeholder="Choose a price"
-              >
-                <option value="" disabled>
-                  Choose a price
-                </option>
-                {availablePrices?.map((price) => {
-                  return (
-                    <option key={price} value={price}>
-                      {price}
-                    </option>
-                  );
-                })}
-              </Field>
-              <ErrorMessage
-                component="span"
-                name="price"
-                className={css.error}
-                id="price-error"
-              />
+            <div className={`${css.formGroup} ${css.priceGroup}`}>
+              <p className={css.label}>Price / 1 hour</p>
+              <div className={css.inputWrapper}>
+                <Select
+                  inputId="price-input"
+                  instanceId="price-input"
+                  name="price"
+                  aria-label="Price / 1 hour"
+                  options={priceOptions}
+                  value={
+                    priceOptions?.find(
+                      (p) => p.value === Number(formik.values.price),
+                    ) || null
+                  }
+                  isSearchable={false}
+                  placeholder="Choose a price"
+                  classNamePrefix="custom"
+                  onChange={(option) => {
+                    const selectedPrice = (option as Option)?.value || "";
+                    formik.setFieldValue("price", selectedPrice);
+                  }}
+                  formatOptionLabel={(option, { context }) => {
+                    if (
+                      context === "value" &&
+                      Number(formik.values.price) === (option as Option).value
+                    ) {
+                      return `To $${(option as Option).value}`;
+                    }
+                    return `${(option as Option).value}`;
+                  }}
+                  components={{
+                    DropdownIndicator: (props) => (
+                      <components.DropdownIndicator {...props}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "16px",
+                            height: "16px",
+                            color: "#101828",
+                          }}
+                        >
+                          <svg
+                            width="100%"
+                            height="100%"
+                            className={css.arrowDown}
+                          >
+                            <use
+                              href={
+                                props.selectProps.menuIsOpen
+                                  ? "../../img/sprite.svg#icon-arrow-up"
+                                  : "../../img/sprite.svg#icon-arrow-down"
+                              }
+                            ></use>
+                          </svg>
+                        </div>
+                      </components.DropdownIndicator>
+                    ),
+                    IndicatorSeparator: () => null,
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      borderRadius: "12px",
+                      border: "1px solid var(--inputs)",
+                      paddingLeft: "16px",
+                      paddingRight: "16px",
+                      width: "100%",
+                      height: "44px",
+                      background: "var(--inputs)",
+                      boxShadow: "none",
+                      outline: "none",
+                      "&:hover": {
+                        border: "1px solid var(--inputs)",
+                      },
+                    }),
+                    valueContainer: (provided) => ({
+                      ...provided,
+                      padding: 0,
+                    }),
+                    input: (provided) => ({
+                      ...provided,
+                      margin: 0,
+                      padding: 0,
+                    }),
+
+                    singleValue: (provided) => ({
+                      ...provided,
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      color: "var(--main)",
+                      margin: 0,
+                    }),
+                    placeholder: (provided) => ({
+                      ...provided,
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      color: "var(--main)",
+                    }),
+                    dropdownIndicator: (provided) => ({
+                      ...provided,
+                      padding: 0,
+                    }),
+                    indicatorsContainer: (provided) => ({
+                      ...provided,
+                    }),
+                    //^ OPEN MENU
+                    menu: (provided) => ({
+                      ...provided,
+                      marginTop: "4px",
+                      border: "1px solid var(--inputs)",
+                      borderRadius: "12px",
+                      width: "100%",
+                      boxShadow: "0 4px 36px 0 rgba(0, 0, 0, 0.02)",
+                      background: "var(--white)",
+                    }),
+                    menuList: (provided) => ({
+                      ...provided,
+                      padding: "8px 0",
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      color: "var(--gray)",
+                      maxHeight: "188px",
+                      overflowY: "auto",
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      background: "var(--white)",
+                      color: state.isFocused ? "var(--main)" : "var(--gray)",
+                      backgroundColor: "var(--white)",
+                      "&:active": {
+                        backgroundColor: "var(--white)",
+                      },
+                      fontFamily: "var(--font-family)",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "125%",
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
+              </div>
             </div>
 
             {/* FROM / TO */}
-            <fieldset className={css.formGroup}>
-              <legend>Car mileage / km</legend>
+            <fieldset className={`${css.formGroup} ${css.fieldsetGroup}`}>
+              <legend className={css.legend}>Car mileage / km</legend>
 
               <div className={css.rangeInputs}>
-                <Field
-                  id="from"
-                  type="number"
-                  name="from"
-                  placeholder="From"
-                  className={css.input}
-                />
+                <div className={css.inputBox}>
+                  <label htmlFor="from" className={css.prefix}>
+                    From
+                  </label>
+                  <Field
+                    id="from"
+                    type="number"
+                    name="from"
+                    className={`${css.input} ${css.inputLeft}`}
+                  />
+                </div>
 
-                <Field
-                  id="to"
-                  type="number"
-                  name="to"
-                  placeholder="To"
-                  className={css.input}
-                />
-              </div>
-
-              <div>
-                <ErrorMessage
-                  component="span"
-                  name="from"
-                  className={css.error}
-                />
-                <ErrorMessage
-                  component="span"
-                  name="to"
-                  className={css.error}
-                />
+                <div className={css.inputBox}>
+                  <label htmlFor="to" className={css.prefix}>
+                    To
+                  </label>
+                  <Field
+                    id="to"
+                    type="number"
+                    name="to"
+                    className={`${css.input} ${css.inputRight}`}
+                  />
+                </div>
               </div>
             </fieldset>
 
             {/* BUTTON */}
-            <div className={css.actions}>
-              <button type="submit" className={css.submitButton}>
-                Search
-              </button>
-            </div>
+            <button type="submit" className={css.submitButton}>
+              Search
+            </button>
           </Form>
-        </Formik>
-      </div>
-    </>
+        )}
+      </Formik>
+    </div>
   );
 };
 

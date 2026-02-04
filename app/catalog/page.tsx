@@ -1,5 +1,3 @@
-// import css from "./page.module.css";
-
 import CarList from "@/components/CarList/CarList";
 import SearchForm from "@/components/SearchForm/SearchForm";
 import { getBrandsServer, getCarsServer } from "@/lib/serverApi";
@@ -8,6 +6,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import css from "./page.module.css";
 
 const Catalog = async () => {
   const queryClient = new QueryClient();
@@ -25,8 +24,10 @@ const Catalog = async () => {
   return (
     <>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <SearchForm />
-        <CarList />
+        <div className={css.content}>
+          <SearchForm />
+          <CarList />
+        </div>
       </HydrationBoundary>
     </>
   );

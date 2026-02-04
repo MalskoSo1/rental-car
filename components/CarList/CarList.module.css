@@ -1,0 +1,39 @@
+.carListContainer {
+  width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: 124px;
+}
+
+.carList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style: none;
+  column-gap: 32px;
+  row-gap: 48px;
+  margin-bottom: 80px;
+}
+
+.buttonLoadMore {
+  border: 1px solid var(--button);
+  border-radius: 12px;
+  padding: 12px 12px;
+  width: 156px;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 125%;
+  color: var(--main);
+
+  transition: border 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.buttonLoadMore:hover,
+.buttonLoadMore:focus {
+  border: 1px solid var(--button-hover);
+}
