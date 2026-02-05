@@ -1,6 +1,7 @@
 export interface Cars {
   cars: Car[];
   totalCars: number;
+  totalPages: number;
 }
 
 export interface Car {

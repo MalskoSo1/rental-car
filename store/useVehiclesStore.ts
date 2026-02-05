@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 interface VehiclesState {
   vehicles: Car[] | null;
   setVehicles: (vehicles: Car[] | null) => void;
+  addVehicles: (newVehicles: Car[]) => void;
   clearVehicles: () => void;
 
   favoriteList: string[] | null;
@@ -12,6 +13,10 @@ interface VehiclesState {
   filter: SearchFormValues | null;
   setFilter: (filter: SearchFormValues) => void;
   clearFilter: () => void;
+
+  page: number;
+  nextPage: () => void;
+  resetPage: () => void;
 }
 
 export const useVehiclesStore = create<VehiclesState>()(
@@ -22,6 +27,10 @@ export const useVehiclesStore = create<VehiclesState>()(
         set({
           vehicles,
         }),
+      addVehicles: (newVehicles) =>
+        set((state) => ({
+          vehicles: [...(state.vehicles ?? []), ...newVehicles],
+        })),
       clearVehicles: () =>
         set({
           vehicles: null,
@@ -31,6 +40,15 @@ export const useVehiclesStore = create<VehiclesState>()(
       filter: null,
       setFilter: (filter) => set({ filter }),
       clearFilter: () => set({ filter: null }),
+      page: 1,
+      nextPage: () =>
+        set((state) => ({
+          page: state.page + 1,
+        })),
+      resetPage: () =>
+        set({
+          page: 1,
+        }),
     }),
 
     {

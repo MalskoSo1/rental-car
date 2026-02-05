@@ -23,14 +23,12 @@ interface Option {
 
 interface SearchFormProps {
   allCars: Car[];
-  page: number;
 }
 
-const SearchForm = ({ allCars, page }: SearchFormProps) => {
-  const setVehicles = useVehiclesStore((s) => s.setVehicles);
-  const filter = useVehiclesStore((s) => s.filter);
+const SearchForm = ({ allCars }: SearchFormProps) => {
   const setFilter = useVehiclesStore((s) => s.setFilter);
   const clearFilter = useVehiclesStore((s) => s.clearFilter);
+  const clearVehicles = useVehiclesStore((s) => s.clearVehicles);
   const {
     data: brands,
     isSuccess: isBrandsSuccess,
@@ -40,25 +38,7 @@ const SearchForm = ({ allCars, page }: SearchFormProps) => {
   } = useQuery({
     queryKey: ["getBrands"],
     queryFn: () => fetchBrands(),
-    // placeholderData: keepPreviousData,
   });
-
-  const {
-    data: carsData,
-    isSuccess: isCarsSuccess,
-    isError: isCarsError,
-    error: carsError,
-    isLoading: isCarsLoading,
-  } = useQuery({
-    queryKey: ["getCars", filter],
-    queryFn: () => fetchCars(filter),
-    // placeholderData: keepPreviousData,
-    // placeholderData: { cars: [], },
-  });
-
-  useEffect(() => {
-    if (isCarsSuccess) setVehicles(carsData.cars);
-  }, [isCarsSuccess, carsData, setVehicles]);
 
   const carPrices = allCars?.map((x) => Number(x.rentalPrice));
   const minPrice = Math.min(...(carPrices ?? []));
@@ -92,23 +72,17 @@ const SearchForm = ({ allCars, page }: SearchFormProps) => {
     label: `$${price}`,
   }));
 
+  const resetPage = useVehiclesStore((s) => s.resetPage);
+
   const handleSubmit = (values: SearchFormValues) => {
-    const stringValues: SearchFormValues = {
-      brand: values.brand === "" ? undefined : values.brand,
-      rentalPrice:
-        values?.rentalPrice?.toString() === ""
-          ? undefined
-          : values?.rentalPrice?.toString(),
-      minMileage:
-        values?.minMileage?.toString() === ""
-          ? undefined
-          : values?.minMileage?.toString(),
-      maxMileage:
-        values?.maxMileage?.toString() === ""
-          ? undefined
-          : values?.maxMileage?.toString(),
+    const newFilter: SearchFormValues = {
+      brand: values.brand || undefined,
+      rentalPrice: values.rentalPrice || undefined,
+      minMileage: values.minMileage || undefined,
+      maxMileage: values.maxMileage || undefined,
     };
-    setFilter(stringValues);
+    resetPage();
+    setFilter(newFilter);
   };
 
   return (

@@ -24,9 +24,8 @@ export async function fetchCars(
       const res = await api.get<Cars>("/cars", { params });
       return res.data;
     }
-    filter.page = page;
-    filter.limit = limit;
-    const res = await api.get<Cars>("/cars", { params: filter });
+    const params = { ...filter, page, limit };
+    const res = await api.get<Cars>("/cars", { params });
     return res.data;
   } catch (error) {
     console.error("Error fetching cars:", error);

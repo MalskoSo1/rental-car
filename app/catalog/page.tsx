@@ -9,23 +9,13 @@ import {
 import css from "./page.module.css";
 import { fetchBrands, fetchCars } from "@/lib/carsApi";
 import { Car, Cars } from "@/type/car";
-import { useState } from "react";
 
 const Catalog = async () => {
   const queryClient = new QueryClient();
-  let page = 1;
-
-  const plusPage = () => {
-    page++;
-  };
-
-  const resetPage = () => {
-    page = 1;
-  };
 
   await queryClient.prefetchQuery({
-    queryKey: ["getCars", null],
-    queryFn: () => fetchCars(null),
+    queryKey: ["getCars", null, null],
+    queryFn: () => fetchCars(null, "1"),
   });
 
   const carsData = queryClient.getQueryData<Cars>(["getCars", null]);
@@ -45,8 +35,8 @@ const Catalog = async () => {
     <>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <div className={css.content}>
-          <SearchForm allCars={allCars} page={page} />
-          <CarList plusPage={plusPage} />
+          <SearchForm allCars={allCars} />
+          <CarList />
         </div>
       </HydrationBoundary>
     </>
