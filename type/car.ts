@@ -1,5 +1,6 @@
 export interface Cars {
   cars: Car[];
+  totalCars: number;
 }
 
 export interface Car {
@@ -22,3 +23,12 @@ export interface Car {
 }
 
 export type Brands = string[];
+
+export interface SearchFormValues {
+  brand?: string;
+  rentalPrice?: string;
+  minMileage?: string;
+  maxMileage?: string;
+  limit?: string;
+  page?: string;
+}

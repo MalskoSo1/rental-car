@@ -57,10 +57,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${manrope.variable} ${inter.variable}`}>
         <TanStackProvider>
-          {/* <AuthProvider> */}
           <Header />
           {children}
-          {/* </AuthProvider> */}
         </TanStackProvider>
       </body>
     </html>

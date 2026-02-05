@@ -1,7 +1,7 @@
 "use client";
 
 import RentForm from "@/components/RentForm/RentForm";
-import { fetchCarById } from "@/lib/clientApi";
+import { fetchCarById } from "@/lib/carsApi";
 import { formatAddress } from "@/lib/common";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -41,6 +41,7 @@ const CarDetailsClient = () => {
             height={512}
             className={css.carImage}
             loading="eager"
+            sizes="(max-width: 768px) 100vw, 640px"
           />
           <RentForm />
         </div>

@@ -1,30 +1,61 @@
 .carPage {
   padding-top: 152px;
   padding-bottom: 104px;
+  padding: 152px 20px 104px 20px;
+  display: flex;
 }
 
 .carInfoContainer {
-  width: 1200px;
+  max-width: 1200px;
   margin: 0 auto;
 
   display: flex;
   flex-direction: row;
+  justify-content: center;
   column-gap: 72px;
+}
+
+@media (max-width: 1439px) {
+  .carInfoContainer {
+    flex-wrap: wrap;
+  }
+}
+
+@media (min-width: 1440px) {
+  .carInfoContainer {
+    flex-wrap: nowrap;
+  }
 }
 
 .carLeftPart {
   display: flex;
   flex-direction: column;
   justify-content: start;
+  align-items: center;
 }
 
 .carImage {
   border-radius: 19px;
   margin-bottom: 40px;
+  width: 100%;
+  height: auto;
+  max-width: 640px;
 }
 
 .carRightPart {
   padding-top: 20px;
+}
+
+@media (max-width: 1439px) {
+  .carRightPart {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .carRightPart {
+    width: 488px;
+  }
 }
 
 /* ^ MAIN INFO ^ */
@@ -40,6 +71,12 @@
   margin-bottom: 8px;
   justify-content: start;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .nameWrapper {
+    flex-wrap: wrap;
+  }
 }
 
 .carTitle {

@@ -6,7 +6,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import CarDetailsClient from "./CarDetails.client";
-import { getCarByIdServer } from "@/lib/serverApi";
+import { fetchCarById } from "@/lib/carsApi";
 
 interface CarDetailsProps {
   params: Promise<{ id: string }>;
@@ -19,7 +19,7 @@ const CarDetails = async ({ params }: CarDetailsProps) => {
 
   await queryClient.prefetchQuery({
     queryKey: ["getCar", id],
-    queryFn: () => getCarByIdServer(id),
+    queryFn: () => fetchCarById(id),
   });
 
   return (

@@ -39,12 +39,18 @@ const CarItem = ({ car }: CarItemProps) => {
       <div className={css.imageWrapper}>
         <button
           type="button"
-          className={`${css.icon} ${isInFavorites ? css.activeHeart : ""}`}
+          className={css.icon}
           onClick={handleFavoriteFunction}
         >
-          <svg className={css.heart}>
-            <use href="../../img/sprite.svg#icon-heart" />
-          </svg>
+          {isInFavorites ? (
+            <svg className={css.heart}>
+              <use href="../../img/sprite.svg#icon-heart-active" />
+            </svg>
+          ) : (
+            <svg className={css.heart}>
+              <use href="../../img/sprite.svg#icon-heart" />
+            </svg>
+          )}
         </button>
         <Image
           src={car.img}

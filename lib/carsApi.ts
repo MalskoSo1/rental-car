@@ -1,9 +1,32 @@
-import { Brands, Car, Cars } from "@/type/car";
+import { Brands, Car, Cars, SearchFormValues } from "@/type/car";
 import api from "./api";
 
-export async function fetchCars(): Promise<Cars> {
+interface CarsParams {
+  brand?: string;
+  price?: string;
+  from?: string;
+  to?: string;
+  page?: string;
+  limit?: string;
+}
+
+export async function fetchCars(
+  filter: SearchFormValues | null,
+  page?: string,
+  limit?: string,
+): Promise<Cars> {
   try {
-    const res = await api.get<Cars>("/cars");
+    if (filter === null) {
+      const params = {
+        page: page,
+        limit: limit,
+      };
+      const res = await api.get<Cars>("/cars", { params });
+      return res.data;
+    }
+    filter.page = page;
+    filter.limit = limit;
+    const res = await api.get<Cars>("/cars", { params: filter });
     return res.data;
   } catch (error) {
     console.error("Error fetching cars:", error);

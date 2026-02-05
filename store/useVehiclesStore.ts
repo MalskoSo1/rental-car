@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { Car } from "@/type/car";
+import { Car, SearchFormValues } from "@/type/car";
 import { persist } from "zustand/middleware";
-
 interface VehiclesState {
   vehicles: Car[] | null;
   setVehicles: (vehicles: Car[] | null) => void;
@@ -9,6 +8,10 @@ interface VehiclesState {
 
   favoriteList: string[] | null;
   setFavoriteList: (favoriteList: string[] | null) => void;
+
+  filter: SearchFormValues | null;
+  setFilter: (filter: SearchFormValues) => void;
+  clearFilter: () => void;
 }
 
 export const useVehiclesStore = create<VehiclesState>()(
@@ -25,7 +28,11 @@ export const useVehiclesStore = create<VehiclesState>()(
         }),
       favoriteList: null,
       setFavoriteList: (favoriteList) => set({ favoriteList }),
+      filter: null,
+      setFilter: (filter) => set({ filter }),
+      clearFilter: () => set({ filter: null }),
     }),
+
     {
       name: "favorite-list",
       partialize: (state) => ({ favoriteList: state.favoriteList }),

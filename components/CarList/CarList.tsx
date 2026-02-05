@@ -1,12 +1,14 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import CarItem from "../CarItem/CarItem";
-import { fetchCars } from "@/lib/clientApi";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import css from "./CarList.module.css";
 
-const CarList = () => {
+interface CarListProps {
+  plusPage: () => void;
+}
+
+const CarList = ({ plusPage }: CarListProps) => {
   const cars = useVehiclesStore((s) => s.vehicles) ?? [];
 
   return (
@@ -17,7 +19,7 @@ const CarList = () => {
         })}
       </ul>
 
-      <button className={css.buttonLoadMore} type="button">
+      <button className={css.buttonLoadMore} type="button" onClick={plusPage}>
         Load more
       </button>
     </div>

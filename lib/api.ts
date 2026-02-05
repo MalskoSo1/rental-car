@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
+const baseURL = "https://car-rental-api.goit.global";
 
 export const api = axios.create({
   baseURL,
-  withCredentials: true,
+  withCredentials: false,
 });
 
 export default api;

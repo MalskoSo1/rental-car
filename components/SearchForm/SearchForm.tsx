@@ -3,23 +3,34 @@
 import { Formik, FormikProps, Form, Field, ErrorMessage } from "formik";
 import css from "./SearchForm.module.css";
 import * as Yup from "yup";
-import { fetchBrands, fetchCars } from "@/lib/clientApi";
+import { fetchBrands, fetchCars } from "@/lib/carsApi";
 import { useQuery } from "@tanstack/react-query";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { components } from "react-select";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Car, Cars, SearchFormValues } from "@/type/car";
 
-const Select = dynamic(() => import("react-select"), { ssr: false });
+const Select = dynamic(() => import("react-select"), {
+  ssr: false,
+  loading: () => <div className={css.selectSkeleton}></div>,
+});
 
 interface Option {
   value: string | number;
   label: string;
 }
 
-const SearchForm = () => {
-  const handleSubmit = () => console.log("hello");
+interface SearchFormProps {
+  allCars: Car[];
+  page: number;
+}
 
+const SearchForm = ({ allCars, page }: SearchFormProps) => {
+  const setVehicles = useVehiclesStore((s) => s.setVehicles);
+  const filter = useVehiclesStore((s) => s.filter);
+  const setFilter = useVehiclesStore((s) => s.setFilter);
+  const clearFilter = useVehiclesStore((s) => s.clearFilter);
   const {
     data: brands,
     isSuccess: isBrandsSuccess,
@@ -39,34 +50,34 @@ const SearchForm = () => {
     error: carsError,
     isLoading: isCarsLoading,
   } = useQuery({
-    queryKey: ["getCars"],
-    queryFn: () => fetchCars(),
+    queryKey: ["getCars", filter],
+    queryFn: () => fetchCars(filter),
     // placeholderData: keepPreviousData,
-    placeholderData: { cars: [] },
-    enabled: false,
+    // placeholderData: { cars: [], },
   });
-
-  const setVehicles = useVehiclesStore((s) => s.setVehicles);
 
   useEffect(() => {
     if (isCarsSuccess) setVehicles(carsData.cars);
   }, [isCarsSuccess, carsData, setVehicles]);
 
-  const carPrices = carsData?.cars?.map((x) => Number(x.rentalPrice));
+  const carPrices = allCars?.map((x) => Number(x.rentalPrice));
   const minPrice = Math.min(...(carPrices ?? []));
   const maxPrice = Math.max(...(carPrices ?? []));
   const availablePrices: number[] = [];
-  const brandOptions = brands?.map((b) => ({ value: b, label: b }));
+  const brandOptions = useMemo(
+    () => brands?.map((b) => ({ value: b, label: b })) ?? [],
+    [brands],
+  );
 
   for (let price = minPrice; price <= maxPrice; price += 10) {
     availablePrices.push(price);
   }
 
-  const initialValues = {
+  const initialValues: SearchFormValues = {
     brand: "",
-    price: "",
-    from: "",
-    to: "",
+    rentalPrice: "",
+    minMileage: "",
+    maxMileage: "",
   };
 
   const FormSchema = Yup.object().shape({
@@ -80,6 +91,26 @@ const SearchForm = () => {
     value: price,
     label: `$${price}`,
   }));
+
+  const handleSubmit = (values: SearchFormValues) => {
+    const stringValues: SearchFormValues = {
+      brand: values.brand === "" ? undefined : values.brand,
+      rentalPrice:
+        values?.rentalPrice?.toString() === ""
+          ? undefined
+          : values?.rentalPrice?.toString(),
+      minMileage:
+        values?.minMileage?.toString() === ""
+          ? undefined
+          : values?.minMileage?.toString(),
+      maxMileage:
+        values?.maxMileage?.toString() === ""
+          ? undefined
+          : values?.maxMileage?.toString(),
+    };
+    setFilter(stringValues);
+  };
+
   return (
     <div className={css.formContainer}>
       <Formik
@@ -246,12 +277,12 @@ const SearchForm = () => {
                 <Select
                   inputId="price-input"
                   instanceId="price-input"
-                  name="price"
+                  name="rentalPrice"
                   aria-label="Price / 1 hour"
                   options={priceOptions}
                   value={
                     priceOptions?.find(
-                      (p) => p.value === Number(formik.values.price),
+                      (p) => p.value === Number(formik.values.rentalPrice),
                     ) || null
                   }
                   isSearchable={false}
@@ -259,12 +290,13 @@ const SearchForm = () => {
                   classNamePrefix="custom"
                   onChange={(option) => {
                     const selectedPrice = (option as Option)?.value || "";
-                    formik.setFieldValue("price", selectedPrice);
+                    formik.setFieldValue("rentalPrice", selectedPrice);
                   }}
                   formatOptionLabel={(option, { context }) => {
                     if (
                       context === "value" &&
-                      Number(formik.values.price) === (option as Option).value
+                      Number(formik.values.rentalPrice) ===
+                        (option as Option).value
                     ) {
                       return `To $${(option as Option).value}`;
                     }
@@ -404,7 +436,7 @@ const SearchForm = () => {
                   <Field
                     id="from"
                     type="number"
-                    name="from"
+                    name="minMileage"
                     className={`${css.input} ${css.inputLeft}`}
                   />
                 </div>
@@ -416,7 +448,7 @@ const SearchForm = () => {
                   <Field
                     id="to"
                     type="number"
-                    name="to"
+                    name="maxMileage"
                     className={`${css.input} ${css.inputRight}`}
                   />
                 </div>
