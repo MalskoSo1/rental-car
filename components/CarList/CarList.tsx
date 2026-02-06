@@ -6,6 +6,8 @@ import css from "./CarList.module.css";
 import { useEffect, useState } from "react";
 import { fetchCars } from "@/lib/carsApi";
 import { useQuery } from "@tanstack/react-query";
+import Loader from "../Loader/Loader";
+import { toast } from "react-toastify";
 
 const CarList = () => {
   const cars = useVehiclesStore((s) => s.vehicles) ?? [];
@@ -17,6 +19,7 @@ const CarList = () => {
   const filter = useVehiclesStore((s) => s.filter);
   const clearVehicles = useVehiclesStore((s) => s.clearVehicles);
   const clearFilter = useVehiclesStore((s) => s.clearFilter);
+  const [isCarListOpen, setIsCarOpen] = useState(false);
 
   const handleLoadMore = () => {
     nextPage();
@@ -45,6 +48,12 @@ const CarList = () => {
   }, []);
 
   useEffect(() => {
+    if (isCarsError) {
+      toast.error("Oops! Something went wrong while loading cars.");
+    }
+  }, [isCarsError, carsError]);
+
+  useEffect(() => {
     if (!isCarsSuccess) return;
 
     if (currentPage === 1) {
@@ -55,24 +64,28 @@ const CarList = () => {
   }, [isCarsSuccess, carsData, currentPage, setVehicles, addVehicles]);
 
   return (
-    <div className={css.carListContainer}>
-      <ul className={css.carList}>
-        {cars.map((car) => {
-          return <CarItem key={car.id} car={car} />;
-        })}
-      </ul>
-      {!noMoreResults ? (
-        <button
-          className={css.buttonLoadMore}
-          type="button"
-          onClick={handleLoadMore}
-        >
-          Load more
-        </button>
-      ) : (
-        ""
-      )}
-    </div>
+    <>
+      <div className={css.carListContainer}>
+        <ul className={css.carList}>
+          {cars.map((car) => {
+            return <CarItem key={car.id} car={car} />;
+          })}
+        </ul>
+        {!isCarsLoading && !noMoreResults ? (
+          <button
+            className={css.buttonLoadMore}
+            type="button"
+            onClick={handleLoadMore}
+          >
+            Load more
+          </button>
+        ) : (
+          ""
+        )}
+      </div>
+
+      {isCarsLoading && !isCarListOpen && <Loader />}
+    </>
   );
 };
 

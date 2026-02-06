@@ -4,7 +4,6 @@ import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
-  useQuery,
 } from "@tanstack/react-query";
 import css from "./page.module.css";
 import { fetchBrands, fetchCars } from "@/lib/carsApi";

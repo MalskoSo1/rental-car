@@ -1,6 +1,5 @@
 import { Brands, Car, Cars, SearchFormValues } from "@/type/car";
-import api from "./api";
-
+import axios from "axios";
 interface CarsParams {
   brand?: string;
   price?: string;
@@ -9,6 +8,10 @@ interface CarsParams {
   page?: string;
   limit?: string;
 }
+
+export const api = axios.create({
+  baseURL: "https://car-rental-api.goit.global",
+});
 
 export async function fetchCars(
   filter: SearchFormValues | null,
@@ -28,7 +31,6 @@ export async function fetchCars(
     const res = await api.get<Cars>("/cars", { params });
     return res.data;
   } catch (error) {
-    console.error("Error fetching cars:", error);
     throw error;
   }
 }
@@ -38,7 +40,6 @@ export async function fetchCarById(id: string): Promise<Car | null> {
     const res = await api.get<Car | null>(`/cars/${id}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching car:", error);
     throw error;
   }
 }
@@ -48,7 +49,6 @@ export async function fetchBrands(): Promise<Brands> {
     const res = await api.get<Brands>(`/brands`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching brands:", error);
     throw error;
   }
 }

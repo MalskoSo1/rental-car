@@ -1,15 +1,16 @@
 "use client";
 
-import { Formik, FormikProps, Form, Field, ErrorMessage } from "formik";
+import { Formik, FormikProps, Form, Field } from "formik";
 import css from "./SearchForm.module.css";
 import * as Yup from "yup";
-import { fetchBrands, fetchCars } from "@/lib/carsApi";
+import { fetchBrands } from "@/lib/carsApi";
 import { useQuery } from "@tanstack/react-query";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { components } from "react-select";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
-import { Car, Cars, SearchFormValues } from "@/type/car";
+import { useEffect, useMemo } from "react";
+import { Car, SearchFormValues } from "@/type/car";
+import { toast } from "react-toastify";
 
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -27,18 +28,21 @@ interface SearchFormProps {
 
 const SearchForm = ({ allCars }: SearchFormProps) => {
   const setFilter = useVehiclesStore((s) => s.setFilter);
-  const clearFilter = useVehiclesStore((s) => s.clearFilter);
-  const clearVehicles = useVehiclesStore((s) => s.clearVehicles);
+
   const {
     data: brands,
-    isSuccess: isBrandsSuccess,
     isError: isBrandsError,
     error: brandsError,
-    isLoading: isBrandsLoading,
   } = useQuery({
     queryKey: ["getBrands"],
     queryFn: () => fetchBrands(),
   });
+
+  useEffect(() => {
+    if (isBrandsError) {
+      toast.error("Oops! Something went wrong while loading brands.");
+    }
+  }, [isBrandsError, brandsError]);
 
   const carPrices = allCars?.map((x) => Number(x.rentalPrice));
   const minPrice = Math.min(...(carPrices ?? []));

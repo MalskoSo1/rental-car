@@ -12,7 +12,7 @@ export const formatAddress = (address: string | undefined): AddressDetails => {
   }
   const arr = address.split(", ");
 
-  if (arr.length === 3) {
+  if (arr.length >= 3) {
     return {
       city: arr[1],
       country: arr[2],

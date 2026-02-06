@@ -3,6 +3,7 @@ import { Manrope, Inter } from "next/font/google";
 import "./globals.css";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 import Header from "@/components/Header/Header";
+import { ToastContainer } from "react-toastify";
 
 const manrope = Manrope({
   weight: ["400", "500", "600", "700"],
@@ -59,6 +60,18 @@ export default function RootLayout({
         <TanStackProvider>
           <Header />
           {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
         </TanStackProvider>
       </body>
     </html>
