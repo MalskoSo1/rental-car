@@ -1,13 +1,5 @@
 import { Brands, Car, Cars, SearchFormValues } from "@/type/car";
 import axios from "axios";
-interface CarsParams {
-  brand?: string;
-  price?: string;
-  from?: string;
-  to?: string;
-  page?: string;
-  limit?: string;
-}
 
 export const api = axios.create({
   baseURL: "https://car-rental-api.goit.global",

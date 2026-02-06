@@ -81,18 +81,15 @@
 
 .carTitle {
   display: inline-block;
-  font-family: var(--font-family);
   font-weight: 600;
   font-size: 24px;
   line-height: 133%;
-  color: var(--main);
   margin-right: 16px;
   white-space: nowrap;
 }
 
 .carId {
   display: inline-block;
-  font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 125%;
@@ -123,25 +120,20 @@
 
   margin-right: 16px;
 
-  font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 125%;
-  color: var(--main);
 }
 
 .carMileage {
   display: inline-block;
 
-  font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 125%;
-  color: var(--main);
 }
 
 .carPrice {
-  font-family: var(--font-family);
   font-weight: 600;
   font-size: 24px;
   line-height: 133%;
@@ -151,54 +143,16 @@
 }
 
 .carDescription {
-  font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 125%;
-  color: var(--main);
 }
 
-/* ^ EXTRA INFO ^  */
-.carExtraInfo {
-}
-
-/* ^ CONDITIONS ^  */
-
-.rentalConditionsTitle {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 120%;
-  color: var(--main);
-  margin-bottom: 20px;
-}
-
-.rentalConditions {
-  margin-bottom: 110px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 16px;
-}
-
-.rentalConditionsItem {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 125%;
-  color: var(--main);
-
-  display: flex;
-  align-items: center;
-  column-gap: 4px;
-}
-
-/* ^ SPECIFICATIONS ^  */
+/* ^ CONDITIONS SPECIFICATIONS ^  */
 .carSpecificationsTitle {
-  font-family: var(--font-family);
   font-weight: 600;
   font-size: 20px;
   line-height: 120%;
-  color: var(--main);
 
   margin-bottom: 20px;
 }
@@ -211,11 +165,9 @@
 }
 
 .specItem {
-  font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 125%;
-  color: var(--main);
 
   display: flex;
   align-items: center;
@@ -223,30 +175,8 @@
 }
 
 /* ^ ACCESSORIES AND FUNCTIONALITIES ^  */
-.carAccessoriesTitle {
-  margin-bottom: 20px;
-
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 120%;
-  color: var(--main);
-}
-
 .accessories {
   display: flex;
   flex-direction: column;
   row-gap: 16px;
-}
-
-.accessoryItem {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 125%;
-  color: var(--main);
-
-  display: flex;
-  align-items: center;
-  column-gap: 4px;
 }

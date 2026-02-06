@@ -56,5 +56,9 @@
 <symbol id="icon-arrow-right" viewBox="0 0 32 32">
 <path fill="currentColor" stroke="none" d="M11.057 26.276c-0.521-0.521-0.521-1.365 0-1.886l8.391-8.391-8.391-8.391c-0.521-0.521-0.521-1.365 0-1.886s1.365-0.521 1.886 0l9.333 9.333c0.521 0.521 0.521 1.365 0 1.886l-9.333 9.333c-0.521 0.521-1.365 0.521-1.886 0z"></path>
 </symbol>
+<symbol id="icon-x" viewBox="0 0 32 32">
+<path fill="currentColor" stroke="currentColor"  stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.2" d="M24 8l-16 16"></path>
+<path fill="currentColor" stroke="currentColor"  stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.2" d="M8 8l16 16"></path>
+</symbol>
  </defs>
 </svg>

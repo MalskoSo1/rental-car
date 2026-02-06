@@ -59,14 +59,12 @@
 
 .prefix {
   position: absolute;
-  font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 125%;
   color: var(--main);
   top: 12px;
   left: 24px;
-  /* pointer-events: none; */
 }
 
 .input {
@@ -148,4 +146,52 @@
   100% {
     background-position: 0 0;
   }
+}
+
+/* ^ BUTTON X ^ */
+.iconX {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--gray);
+
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.svgX {
+  width: 100%;
+  height: 100%;
+}
+
+.inputWithFilter {
+  padding-right: 25px;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.iconXLibrary {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--gray);
+
+  position: absolute;
+  right: 38px;
+  top: 50%;
+  transform: translateY(-50%);
 }

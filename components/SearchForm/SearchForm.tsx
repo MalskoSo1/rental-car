@@ -1,6 +1,6 @@
 "use client";
 
-import { Formik, FormikProps, Form, Field } from "formik";
+import { Formik, FormikProps, Form, Field, FormikValues } from "formik";
 import css from "./SearchForm.module.css";
 import * as Yup from "yup";
 import { fetchBrands } from "@/lib/carsApi";
@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo } from "react";
 import { Car, SearchFormValues } from "@/type/car";
 import { toast } from "react-toastify";
+import { useRef } from "react";
 
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -28,6 +29,7 @@ interface SearchFormProps {
 
 const SearchForm = ({ allCars }: SearchFormProps) => {
   const setFilter = useVehiclesStore((s) => s.setFilter);
+  const formikRef = useRef<FormikProps<FormikValues>>(null);
 
   const {
     data: brands,
@@ -92,6 +94,7 @@ const SearchForm = ({ allCars }: SearchFormProps) => {
   return (
     <div className={css.formContainer}>
       <Formik
+        innerRef={formikRef}
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={FormSchema}
@@ -245,6 +248,17 @@ const SearchForm = ({ allCars }: SearchFormProps) => {
                     }),
                   }}
                 />
+                {formik.values.brand && (
+                  <button
+                    type="button"
+                    className={css.iconXLibrary}
+                    onClick={() => formik.setFieldValue("brand", "")}
+                  >
+                    <svg className={css.svgX}>
+                      <use href="../../img/sprite.svg#icon-x" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -399,6 +413,17 @@ const SearchForm = ({ allCars }: SearchFormProps) => {
                     }),
                   }}
                 />
+                {formik.values.rentalPrice && (
+                  <button
+                    type="button"
+                    className={css.iconXLibrary}
+                    onClick={() => formik.setFieldValue("rentalPrice", "")}
+                  >
+                    <svg className={css.svgX}>
+                      <use href="../../img/sprite.svg#icon-x" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -415,8 +440,23 @@ const SearchForm = ({ allCars }: SearchFormProps) => {
                     id="from"
                     type="number"
                     name="minMileage"
-                    className={`${css.input} ${css.inputLeft}`}
+                    className={`${css.input} ${css.inputLeft} ${
+                      formik.values.minMileage ? css.inputWithFilter : ""
+                    }`}
                   />
+                  {formik.values.minMileage && (
+                    <button
+                      type="button"
+                      className={css.iconX}
+                      onClick={() => {
+                        formikRef.current?.setFieldValue("minMileage", "");
+                      }}
+                    >
+                      <svg className={css.svgX}>
+                        <use href="../../img/sprite.svg#icon-x" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
 
                 <div className={css.inputBox}>
@@ -427,8 +467,23 @@ const SearchForm = ({ allCars }: SearchFormProps) => {
                     id="to"
                     type="number"
                     name="maxMileage"
-                    className={`${css.input} ${css.inputRight}`}
+                    className={`${css.input} ${css.inputRight} ${
+                      formik.values.maxMileage ? css.inputWithFilter : ""
+                    }`}
                   />
+                  {formik.values.maxMileage && (
+                    <button
+                      type="button"
+                      className={css.iconX}
+                      onClick={() => {
+                        formikRef.current?.setFieldValue("maxMileage", "");
+                      }}
+                    >
+                      <svg className={css.svgX}>
+                        <use href="../../img/sprite.svg#icon-x" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             </fieldset>

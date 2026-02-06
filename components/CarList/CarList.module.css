@@ -3,6 +3,13 @@
   margin: 0 auto;
   text-align: center;
   padding-bottom: 124px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.carListLoaderWrapper {
+  padding-top: 25px;
 }
 
 .carList {
@@ -13,7 +20,6 @@
   list-style: none;
   column-gap: 32px;
   row-gap: 48px;
-  margin-bottom: 80px;
 }
 
 .buttonLoadMore {
@@ -24,6 +30,7 @@
   height: 44px;
   background: transparent;
   cursor: pointer;
+  margin-top: 80px;
 
   font-family: var(--font-family);
   font-weight: 600;
@@ -38,4 +45,14 @@
 .buttonLoadMore:hover,
 .buttonLoadMore:focus {
   border: 1px solid var(--button-hover);
+}
+
+.noDataList {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 133%;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
 }

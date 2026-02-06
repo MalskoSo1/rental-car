@@ -1,5 +1,3 @@
-// import css from "./page.module.css";
-
 import {
   dehydrate,
   HydrationBoundary,
@@ -7,7 +5,6 @@ import {
 } from "@tanstack/react-query";
 import CarDetailsClient from "./CarDetails.client";
 import { fetchCarById } from "@/lib/carsApi";
-import { notFound } from "next/navigation";
 
 interface CarDetailsProps {
   params: Promise<{ id: string }>;
@@ -18,14 +15,10 @@ const CarDetails = async ({ params }: CarDetailsProps) => {
 
   const queryClient = new QueryClient();
 
-  try {
-    await queryClient.prefetchQuery({
-      queryKey: ["getCar", id],
-      queryFn: () => fetchCarById(id),
-    });
-  } catch {
-    notFound();
-  }
+  await queryClient.prefetchQuery({
+    queryKey: ["getCar", id],
+    queryFn: () => fetchCarById(id),
+  });
 
   return (
     <>

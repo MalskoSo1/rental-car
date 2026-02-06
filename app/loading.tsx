@@ -1,7 +1,9 @@
-import Loader from "@/components/Loader/Loader";
-
 const Loading = () => {
-  return <Loader />;
+  return (
+    <div className="customLoaderWrapper">
+      <div className="customLoader"></div>
+    </div>
+  );
 };
 
 export default Loading;

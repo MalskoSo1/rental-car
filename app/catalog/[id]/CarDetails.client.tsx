@@ -89,11 +89,11 @@ const CarDetailsClient = () => {
 
             {/* EXTRA INFO */}
             <div className={css.carExtraInfo}>
-              <h3 className={css.rentalConditionsTitle}>Rental Conditions:</h3>
-              <ul className={css.rentalConditions}>
+              <h3 className={css.carSpecificationsTitle}>Rental Conditions:</h3>
+              <ul className={css.carSpecifications}>
                 {car?.rentalConditions.map((info, index) => {
                   return (
-                    <li key={index} className={css.rentalConditionsItem}>
+                    <li key={index} className={css.specItem}>
                       <span className={css.icon}>
                         <svg className={css.svgIcon}>
                           <use href="../../img/sprite.svg#icon-check-circle" />
@@ -143,13 +143,13 @@ const CarDetailsClient = () => {
                 </li>
               </ul>
 
-              <h3 className={css.carAccessoriesTitle}>
+              <h3 className={css.carSpecificationsTitle}>
                 Accessories and functionalities:
               </h3>
               <ul className={css.accessories}>
                 {car?.accessories.map((accessory, index) => {
                   return (
-                    <li key={index} className={css.accessoryItem}>
+                    <li key={index} className={css.specItem}>
                       <span className={css.icon}>
                         <svg className={css.svgIcon}>
                           <use href="../../img/sprite.svg#icon-check-circle" />
@@ -161,7 +161,7 @@ const CarDetailsClient = () => {
                 })}
                 {car?.rentalConditions.map((functionality, index) => {
                   return (
-                    <li key={index} className={css.accessoryItem}>
+                    <li key={index} className={css.specItem}>
                       <span className={css.icon}>
                         <svg className={css.svgIcon}>
                           <use href="../../img/sprite.svg#icon-check-circle" />
