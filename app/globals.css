@@ -142,11 +142,6 @@ ul {
   color: var(--gray) !important;
 }
 
-.react-datepicker__day--selected {
-  background-color: var(--button) !important;
-  color: var(--inputs) !important;
-}
-
 .react-datepicker__day--today {
   background-color: var(--inputs) !important;
 }
@@ -157,6 +152,11 @@ ul {
 
 .react-datepicker__day--disabled:hover {
   background-color: rgb(243, 198, 198) !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: var(--button) !important;
+  color: var(--inputs) !important;
 }
 
 .react-datepicker__month {

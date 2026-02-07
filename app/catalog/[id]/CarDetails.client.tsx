@@ -79,7 +79,7 @@ const CarDetailsClient = () => {
                   {addressDetails.city}, {addressDetails.country}
                 </p>
                 <p className={css.carMileage}>
-                  Mileage: {car?.mileage.toLocaleString()} km
+                  Mileage: {car?.mileage.toLocaleString("uk")} km
                 </p>
               </div>
 

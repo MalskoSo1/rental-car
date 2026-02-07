@@ -79,7 +79,7 @@ const CarItem = ({ car }: CarItemProps) => {
 
         <p className={css.info}>{car.type}</p>
 
-        <p className={css.info}>{car.mileage.toLocaleString()} km</p>
+        <p className={css.info}>{car.mileage.toLocaleString("uk")} km</p>
       </div>
 
       <Link href={`/catalog/${car.id}`} className={css.readMore}>
